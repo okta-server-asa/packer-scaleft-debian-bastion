@@ -1,0 +1,13 @@
+---
+
+- file:
+    path: /etc/systemd/system/sftd.service.d
+    state: directory
+    mode: 0755
+
+- template:
+    src: 10-after-cloud-init.conf.j2
+    dest: /etc/systemd/system/sftd.service.d/10-after-cloud-init.conf
+    owner: root
+    group: root
+    mode: 0644

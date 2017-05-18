@@ -1,0 +1,29 @@
+---
+- name: "FIX: Ansible requires aptitude to work: https://github.com/ansible/ansible/issues/18987"
+  raw: apt-get update && apt-get install -y aptitude software-properties-common
+  become: true
+  become_user: root
+  become_method: sudo
+
+- name: Upgrades everything
+  apt: update_cache=yes upgrade=yes
+
+- name: install common packages
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - ntp
+    - curl
+    - wget
+    - apt-transport-https
+    - mtr-tiny
+    - vim
+    - lsof
+    - silversearcher-ag
+    - inetutils-traceroute
+    - jq
+    - ngrep
+    - tshark
+    - tcpdump
+    - postgresql-client
+    - mysql-client
+    - moreutils

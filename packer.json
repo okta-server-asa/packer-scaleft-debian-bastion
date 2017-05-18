@@ -1,0 +1,60 @@
+{
+    "variables": {
+        "scaleft_platform_url": "https://app.scaleft.com",
+        "scaleft_pkg_url": "https://pkg.scaleft.com",
+        "image_name": "scaleft-debian-8-bastion",
+        "aws_ami_groups": ""
+    },
+
+    "provisioners": [
+        {
+            "type": "ansible",
+            "playbook_file": "./playbook.yml",
+            "extra_arguments": [
+                "-vv",
+                "--extra-vars",
+                "scaleft_platform_url={{user `scaleft_platform_url`}} scaleft_pkg_url={{user `scaleft_pkg_url`}} packer_build_type={{ build_type }}"
+            ]
+        },
+        {
+            "type": "shell",
+            "skip_clean": true,
+            "script": "scripts/cleanup.sh"
+        },
+        {
+            "type": "shell-local",
+            "command": "sleep 3"
+        }
+    ],
+
+    "builders": [
+        {
+            "type": "googlecompute",
+            "zone": "us-west1-a",
+            "ssh_username": "packer-image-builder",
+            "project_id": "{{user `gcp_project_id`}}",
+            "image_family": "{{user `image_name`}}",
+            "image_name": "{{user `image_name`}}-{{timestamp}}",
+            "source_image_family": "debian-8"
+        },
+        {
+            "type": "amazon-ebs",
+            "ami_name": "{{user `image_name`}}-{{timestamp}}",
+            "region": "us-west-2",
+            "ssh_username": "admin",
+            "instance_type": "t2.medium",
+            "ami_regions": "{{ user `aws_ami_regions` }}",
+            "ami_groups": "{{ user `aws_ami_groups` }}",
+            "source_ami_filter": {
+                "filters": {
+                    "architecture": "x86_64",
+                    "virtualization-type": "hvm",
+                    "name": "debian-jessie-*",
+                    "root-device-type": "ebs"
+                },
+                "owners": ["379101102735"],
+                "most_recent": true
+            }
+        }
+    ]
+}

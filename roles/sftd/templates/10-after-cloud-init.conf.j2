@@ -1,0 +1,3 @@
+[Unit]
+After=cloud-init.service
+Wants=local-fs.target network-online.target sshd-keygen.service cloud-init-local.service

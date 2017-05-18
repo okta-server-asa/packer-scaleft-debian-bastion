@@ -1,0 +1,34 @@
+---
+
+- fail: msg="Bailing out. this role requires 'scaleft_platform_url'"
+  when: scaleft_platform_url is undefined
+
+- fail: msg="Bailing out. this role requires 'scaleft_pkg_url'"
+  when: scaleft_pkg_url is undefined
+
+
+# tasks file for sftd
+- file:
+    path: /etc/sftd
+    state: directory
+    mode: 0755
+
+- file:
+    path: /etc/sft
+    state: directory
+    mode: 0755
+
+- template:
+    src: sftd.yaml.j2
+    dest: /etc/sft/sftd.yaml
+    owner: root
+    group: root
+    mode: 0644
+
+# TODO(pquerna): change this to use systemd unit masks
+- file:
+    path: /etc/sftd/disable-autostart
+    state: touch
+    mode: 0644
+
+- include: install.yml

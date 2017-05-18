@@ -1,0 +1,23 @@
+---
+# tasks file for sftd
+
+- apt_key:
+    data: "{{ lookup('file', 'scaleft-key.asc') }}"
+    state: present
+
+- apt_repository:
+    repo: "deb {{ scaleft_pkg_url }}/deb linux main"
+    state: present
+    update_cache: yes
+    filename: 'scaleft'
+
+- include: install_gcp.yml
+  when: packer_build_type == "googlecompute"
+
+- include: install_aws.yml
+  when: packer_build_type == "amazon-ebs"
+
+- name: install scaleft-server-tools
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - scaleft-server-tools
