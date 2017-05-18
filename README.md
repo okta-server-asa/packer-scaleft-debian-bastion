@@ -1,6 +1,6 @@
 # packer-scaleft-debian-bastion
 
-This repository provides packer scripts to create a Debian 8 "Jessie" image, meant for use as a bastion, with ScaleFT's Server Tools baked into the image.
+This repository provides packer scripts to create a Debian 8 "Jessie" image, meant for use as a bastion, with [ScaleFT's Server Tools](https://www.scaleft.com/docs/sftd/) baked into the image.
 
 Images for both AWS EC2 and Google Cloud can be built, and the image is based on the official Debian 8 "Jessie" images for each cloud.  On AWS, this means `sftd` is started after `cloud-init`, and on Google Cloud `sftd` is started after `google-instance-setup` has run.
 
